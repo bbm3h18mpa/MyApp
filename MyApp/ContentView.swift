@@ -10,12 +10,18 @@ import SwiftUI
 struct WeltuhrListItem: View {
     let timeZone: TimeZone
     
+    let dateFormatter = DateFormatter()
+    
     init(_ timeZone: TimeZone) {
         self.timeZone = timeZone
+        dateFormatter.dateFormat = "HH:MM"
     }
     
     var body: some View {
-        Text(timeZone.abbreviation() ?? "failure")
+        HStack {
+            Text(timeZone.localizedName(for: .shortGeneric, locale: Locale.current) ?? "Error")
+            Text(dateFormatter.string(from: Date()))
+        }
     }
 }
 
@@ -24,11 +30,12 @@ struct ContentView: View {
     var body: some View {
         TabView {
             NavigationView {
-                List {
+                List() {
                     ForEach(timeZones, id: \.self) { timeZone in
                         WeltuhrListItem(timeZone)
                     }
                 }
+                .listStyle(PlainListStyle())
                 .navigationTitle("Weltuhr")
                 .navigationBarItems(leading: EditButton(), trailing: Button {
                     print("")
